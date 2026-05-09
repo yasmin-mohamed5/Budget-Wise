@@ -35,10 +35,11 @@
 
 import express from 'express';
 import { reportController } from '../controllers/reportController';
+import { verifyToken } from '../middleware/authMiddleware';
 
 const router = express.Router();
 
 // Route to generate a custom report
-router.get('/generate', reportController.generateReport);
+router.get('/generate', verifyToken, reportController.generateReport);
 
 export default router;

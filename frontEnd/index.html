@@ -1,167 +1,63 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BudgetWise - Transactions & Goals</title>
-    <link rel="stylesheet" href="./assets/css/nav.css">
-    <link rel="stylesheet" href="./assets/css/index.css">
-    <style>
-        nav {
-            background: #4caf50;
-            padding: 10px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        section {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        hr {
-            border: 0;
-            height: 1px;
-            background: #eee;
-            margin: 40px 0;
-        }
-    </style>
-</head>
-<body>
+    <link rel="stylesheet" href="./assets/css/nav.css" />
+    <link rel="stylesheet" href="./assets/css/index.css" />
+  </head>
+  <body>
     <nav>
-        <span id="userInfo" style="color: white; margin-right: auto; display: none;"></span>
-        <a href="index.html">Financial Goals</a>
-        <a href="report.html">Report</a>
-        <a href="addTransaction.html">Add Transaction</a>
-        <a href="login.html" id="loginLink">Login</a>
-        <a href="register.html" id="registerLink">Register</a>
-        <a href="#" id="logoutLink" onclick="handleLogout()" style="display:none">Logout</a>
+      <a href="index.html">Financial Goals</a>
+      <a href="report.html">Report</a>
+      <a href="addTransaction.html">Add Transaction</a>
+      <span
+        id="userInfo"
+        style="color: white; margin-right: auto; display: none"
+      ></span>
+      <a href="#" id="logoutLink" onclick="handleLogout()" style="display: none"
+        >Logout</a
+      >
     </nav>
 
     <div class="container">
-        <h1>Budget Management System</h1>
-        
-        <!-- TRANSACTIONS SECTION -->
-        <section id="transactions-section">
-            <h2>Transaction Management</h2>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div>
-                    <h3>Add Category</h3>
-                    <form id="category-form">
-                        <input type="text" id="cat-name" placeholder="Category Name" required>
-                        <select id="cat-type">
-                            <option value="expense">Expense</option>
-                            <option value="income">Income</option>
-                        </select>
-                        <input type="number" id="cat-limit" placeholder="Monthly Limit ($)" step="0.01">
-                        <button type="submit">Create Category</button>
-                    </form>
-                </div>
+      <!-- GOALS SECTION -->
+      <section id="goals-section">
+        <h2>Financial Goals</h2>
 
-                <div>
-                    <h3>Add Transaction</h3>
-                    <form id="transaction-form">
-                        <input type="number" id="trans-amount" placeholder="Amount" step="0.01" required>
-                        <select id="trans-type" onchange="toggleTransactionFields()">
-                            <option value="Expense">Expense</option>
-                            <option value="Income">Income</option>
-                        </select>
-                        <select id="trans-category" required>
-                            <option value="">Select Category</option>
-                        </select>
-                        <input type="text" id="trans-source" placeholder="Source (for Income)" style="display:none">
-                        <input type="text" id="trans-desc" placeholder="Description">
-                        <button type="submit">Add Transaction</button>
-                    </form>
-                </div>
+        <div class="form-group">
+          <h3>Create New Goal</h3>
+          <div style="margin-bottom: 10px; display: flex; gap: 20px">
+            <div style="width: 50%">
+              <input id="name" placeholder="Goal Name" />
+              <p id="nameError" class="error"></p>
             </div>
-
-            <div style="margin-top: 30px;">
-                <h3>Recent History</h3>
-                <button onclick="fetchData()">Refresh Data</button>
-                <div id="display-area">
-                    <p>Loading data...</p>
-                </div>
+            <div style="width: 50%">
+              <input id="target" type="number" placeholder="Target Amount" />
+              <p id="targetError" class="error"></p>
             </div>
-        </section>
-
-        <hr>
-
-        <!-- GOALS SECTION -->
-        <section id="goals-section">
-            <h2>Financial Goals</h2>
-            
-            <div style="margin-bottom: 20px;">
-                <h3>Create New Goal</h3>
-                <input id="goal-name" placeholder="Goal Name">
-                <input id="goal-target" type="number" placeholder="Target Amount">
-                <input id="goal-deadline" type="date">
-                <button onclick="createGoal()">Create Goal</button>
+          </div>
+          <div style="margin-bottom: 10px; display: flex; gap: 20px">
+            <div style="width: 60%;">
+              <input id="deadline" type="date" />
+              <p id="deadlineError" class="error"></p>
             </div>
+            <button style="width: 30%; height: 95%;" onclick="createGoal()">
+              Create Goal
+            </button>
+          </div>
+        </div>
 
-            <div>
-                <h3>All Goals</h3>
-                <button onclick="getAllGoals()">Load Goals</button>
-                <div id="goals" style="margin-top: 15px;"></div>
-            </div>
-        </section>
+        <div>
+          <h3>All Goals</h3>
+          <button onclick="getAllGoals()">Load Goals</button>
+          <div id="goals" style="margin-top: 15px"></div>
+        </div>
+      </section>
     </div>
 
     <!-- Scripts -->
-    <script src="app.js"></script>
     <script src="assets/js/financialGoals.js"></script>
-    <script>
-        // Auth UI Management
-        const userJson = localStorage.getItem('user');
-        
-        if (userJson) {
-            document.getElementById('loginLink').style.display = 'none';
-            document.getElementById('registerLink').style.display = 'none';
-            document.getElementById('logoutLink').style.display = 'inline';
-            
-            const user = JSON.parse(userJson);
-            const info = document.getElementById('userInfo');
-            info.textContent = `Welcome, ${user.name}`;
-            info.style.display = 'inline';
-        } else if (window.location.pathname.includes('index.html')) {
-             // Redirect to login if no user data (though server should handle cookie check)
-             // window.location.href = 'login.html';
-        }
-
-        async function handleLogout() {
-            try {
-                await fetch('/auth/logout', { method: 'POST' });
-                localStorage.removeItem('user');
-                window.location.href = 'login.html';
-            } catch (err) {
-                console.error('Logout failed', err);
-                localStorage.removeItem('user');
-                window.location.href = 'login.html';
-            }
-        }
-
-        // Auto-load data
-        window.onload = () => {
-            if (userJson) {
-                fetchCategories();
-                fetchData();
-                if (typeof getAllGoals === 'function') getAllGoals();
-            }
-        };
-    </script>
-</body>
+  </body>
 </html>

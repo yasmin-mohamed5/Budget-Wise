@@ -1,49 +1,87 @@
-import { SpendingPattern, Report, ExpenseByCategory } from "../models/Reports.dto";
+import mongoose from "mongoose";
+import {
+  SpendingPattern,
+  Report,
+  ExpenseByCategory,
+} from "../models/Reports.dto";
 import Transaction, { TransactionFilters } from "../models/Transaction";
 
 class ReportService {
   static async getReport(
+    userId: string,
     filters: TransactionFilters,
     groupBy: "day" | "week" | "month" = "week",
   ): Promise<Report> {
-    const [totalIncome, totalExpenses, expenseByCategory, spendingPattern] =
-      await Promise.all([
-        this.totalIncome(filters),
-        this.totalExpenses(filters),
-        this.expenseByCategory(filters),
-        this.spendingPattern(filters, groupBy),
-      ]);
-    const result: Report = {
-      totalIncome: totalIncome,
-      totalExpenses: totalExpenses,
-      expenseByCategory: expenseByCategory.map((c) => {
-        const total = totalExpenses || 1; // avoid division by zero
-        return {
-          categoryName: c.categoryName,
-          totalAmount: c.totalAmount,
-          percentage: (c.totalAmount / total) * 100,
-        };
-      }),
-      categoryChart: {
-        labels: expenseByCategory.map((c) => c.categoryName),
-        values: expenseByCategory.map((c) => c.totalAmount),
-      },
-      spendingPattern: spendingPattern,
-    };
-
-    return result;
+    try {
+      const [totalIncome, totalExpenses, expenseByCategory, spendingPattern] =
+        await Promise.all([
+          this.totalIncome({ filters, userId } as {
+            filters: TransactionFilters;
+            userId: string;
+          }),
+          this.totalExpenses({ filters, userId } as {
+            filters: TransactionFilters;
+            userId: string;
+          }),
+          this.expenseByCategory({ filters, userId } as {
+            filters: TransactionFilters;
+            userId: string;
+          }),
+          this.spendingPattern(
+            { filters, userId } as {
+              filters: TransactionFilters;
+              userId: string;
+            },
+            groupBy,
+          ),
+        ]);
+      const result: Report = {
+        userId: userId,
+        totalIncome: totalIncome,
+        totalExpenses: totalExpenses,
+        expenseByCategory: expenseByCategory.map((c) => {
+          const total = totalExpenses || 1; // avoid division by zero
+          return {
+            categoryName: c.categoryName,
+            totalAmount: c.totalAmount,
+            percentage: (c.totalAmount / total) * 100,
+          };
+        }),
+        categoryChart: {
+          labels: expenseByCategory.map((c) => c.categoryName),
+          values: expenseByCategory.map((c) => c.totalAmount),
+        },
+        spendingPattern: spendingPattern,
+      };
+      return result;
+    } catch (error) {
+      console.error("Error generating report:", error);
+      throw new Error("Failed to generate report");
+    }
+    return {} as Report;
   }
   // spending patterns
   static async spendingPattern(
-    filters: TransactionFilters = {},
+    { filters, userId }: { filters: TransactionFilters; userId: string },
     groupBy: "day" | "week" | "month" = "week",
   ): Promise<SpendingPattern[]> {
+    const endDate = filters.endDate ? new Date(filters.endDate) : null;
+
+    if (endDate) {
+      endDate.setHours(23, 59, 59, 999);
+    }
+
     const dateFilter =
       filters.startDate || filters.endDate
         ? {
             date: {
-              ...(filters.startDate && { $gte: new Date(filters.startDate) }),
-              ...(filters.endDate && { $lte: new Date(filters.endDate) }),
+              ...(filters.startDate && {
+                $gte: new Date(filters.startDate),
+              }),
+
+              ...(endDate && {
+                $lte: endDate,
+              }),
             },
           }
         : {};
@@ -76,6 +114,7 @@ class ReportService {
       {
         $match: {
           type: "Expense",
+          userId: new mongoose.Types.ObjectId(userId),
           ...dateFilter,
         },
       },
@@ -103,24 +142,40 @@ class ReportService {
     return pattern;
   }
   // Calculate total income for a user with optional date filters
-  static async totalIncome(filters: TransactionFilters): Promise<number> {
+  static async totalIncome({
+    filters,
+    userId,
+  }: {
+    filters: TransactionFilters;
+    userId: string;
+  }): Promise<number> {
+    const matchFilter = {
+      type: "Income",
+      userId: new mongoose.Types.ObjectId(userId),
+
+      ...(filters.startDate || filters.endDate
+        ? {
+            date: {
+              ...(filters.startDate
+                ? { $gte: new Date(filters.startDate) }
+                : {}),
+
+              ...(filters.endDate
+                ? {
+                    $lte: (() => {
+                      const end = new Date(filters.endDate);
+                      end.setHours(23, 59, 59, 999);
+                      return end;
+                    })(),
+                  }
+                : {}),
+            },
+          }
+        : {}),
+    };
     const result = await Transaction.aggregate([
       {
-        $match: {
-          type: "Income",
-          ...(filters.startDate || filters.endDate
-            ? {
-                date: {
-                  ...(filters.startDate
-                    ? { $gte: new Date(filters.startDate) }
-                    : {}),
-                  ...(filters.endDate
-                    ? { $lte: new Date(filters.endDate) }
-                    : {}),
-                },
-              }
-            : {}),
-        },
+        $match: matchFilter,
       },
       {
         $group: {
@@ -134,20 +189,33 @@ class ReportService {
   }
 
   // Calculate total expenses for a user with optional date filters
-  static async totalExpenses(filters: TransactionFilters): Promise<number> {
+  static async totalExpenses({
+    filters,
+    userId,
+  }: {
+    filters: TransactionFilters;
+    userId: string;
+  }): Promise<number> {
+    const endDate = filters.endDate ? new Date(filters.endDate) : null;
+
+    if (endDate) {
+      endDate.setHours(23, 59, 59, 999);
+    }
     const result = await Transaction.aggregate([
       {
         $match: {
           type: "Expense",
+
+          userId: new mongoose.Types.ObjectId(userId),
+
           ...(filters.startDate || filters.endDate
             ? {
                 date: {
                   ...(filters.startDate
                     ? { $gte: new Date(filters.startDate) }
                     : {}),
-                  ...(filters.endDate
-                    ? { $lte: new Date(filters.endDate) }
-                    : {}),
+
+                  ...(endDate ? { $lte: endDate } : {}),
                 },
               }
             : {}),
@@ -165,9 +233,18 @@ class ReportService {
   }
 
   // Get expense breakdown by category for a user with optional date filters
-  static async expenseByCategory(
-    filters: TransactionFilters = {},
-  ): Promise<ExpenseByCategory[]> {
+  static async expenseByCategory({
+    filters,
+    userId,
+  }: {
+    filters: TransactionFilters;
+    userId: string;
+  }): Promise<ExpenseByCategory[]> {
+    const endDate = filters.endDate ? new Date(filters.endDate) : null;
+
+    if (endDate) {
+      endDate.setHours(23, 59, 59, 999);
+    }
     const dateFilter =
       filters.startDate || filters.endDate
         ? {
@@ -175,8 +252,9 @@ class ReportService {
               ...(filters.startDate && {
                 $gte: new Date(filters.startDate),
               }),
-              ...(filters.endDate && {
-                $lte: new Date(filters.endDate),
+
+              ...(endDate && {
+                $lte: endDate,
               }),
             },
           }
@@ -187,6 +265,7 @@ class ReportService {
         // condition to match only expenses for the user and apply date filters if provided
         $match: {
           type: "Expense",
+          userId: new mongoose.Types.ObjectId(userId),
           ...dateFilter,
         },
       },

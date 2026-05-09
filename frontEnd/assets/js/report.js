@@ -1,14 +1,55 @@
 const API = '/reports/generate';
+const loginLink = document.getElementById('loginLink');
+const registerLink = document.getElementById('registerLink');
+const logoutLink = document.getElementById('logoutLink');
+const userInfo = document.getElementById('userInfo');
+
+var startDate = document.getElementById('startDate');
+var endDate = document.getElementById('endDate');
+var pattern = document.getElementById('pattern');
+var patternError = document.getElementById('patternError');
+
+if (token) {
+    if (loginLink) loginLink.style.display = 'none';
+    if (registerLink) registerLink.style.display = 'none';
+    if (logoutLink) logoutLink.style.display = 'inline';
+}
+
+const userJson = localStorage.getItem('user');
+if (userJson) {
+    document.getElementById('loginLink').style.display = 'none';
+    document.getElementById('registerLink').style.display = 'none';
+    document.getElementById('logoutLink').style.display = 'inline';
+    
+    const user = JSON.parse(userJson);
+    const info = document.getElementById('userInfo');
+    info.textContent = `Welcome, ${user.name}`;
+    info.style.display = 'inline';
+} else if (window.location.pathname.includes('index.html')) {
+        // Redirect to login if no user data (though server should handle cookie check)
+        // window.location.href = 'login.html';
+}
+
+async function handleLogout() {
+    try {
+        await fetch('/auth/logout', { method: 'POST' });
+        localStorage.removeItem('user');
+        window.location.href = 'login.html';
+    } catch (err) {
+        console.error('Logout failed', err);
+        localStorage.removeItem('user');
+        window.location.href = 'login.html';
+    }
+}
 
 // form inputs for date range
-let startDate = document.getElementById('startDate');
-let endDate = document.getElementById('endDate');
-let pattern = document.getElementById('pattern');
-let patternError = document.getElementById('patternError');
 
 function generateReport(e) {
+    console.log("here");
+    
     e.preventDefault();
     patternError.textContent = ''; // Clear previous errors
+    
     if(!endDate.value) {
         // Set to today's date
         endDate.value = new Date().toISOString().split('T')[0]; 
@@ -34,12 +75,12 @@ function generateReport(e) {
 
     document.getElementById('charts').style.display = 'block';
     document.getElementById('info').style.display = 'block';
-    loadChart();
+    loadChart(startDate, endDate, pattern);
 }
 
 
 // Generate report based on form input
-async function loadChart() {
+async function loadChart(startDate, endDate, pattern) {
     try {
         // Fetch report data 
         // GET method does not support body, so we pass dates as query parameters

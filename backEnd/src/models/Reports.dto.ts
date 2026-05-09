@@ -8,6 +8,7 @@ export interface SpendingPattern {
 }
 
 export interface Report {
+  userId: string;
   totalIncome: number;
   totalExpenses: number;
   expenseByCategory: ExpenseByCategory[];

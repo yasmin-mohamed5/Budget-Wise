@@ -5,8 +5,8 @@ export type TransactionType = "Income" | "Expense";
 export interface TransactionFilters {
   type?: TransactionType;
   categoryId?: string;
-  startDate?: string | Date;
-  endDate?: string | Date;
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface ITransaction {

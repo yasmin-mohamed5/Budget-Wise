@@ -1,158 +1,143 @@
-// api.js
-const API_URL = "/api/transactions";
-
-function getToken() {
-  return localStorage.getItem("token");
-}
-
-async function api(endpoint, options = {}) {
-  const res = await fetch(`${API_URL}${endpoint}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${getToken()}`,
-      ...options.headers,
-    },
-  });
-
-  const data = await res.json();
-  if (!res.ok) throw data;
-  return data;
-}
+const API_URL = '/transactions';
 let categories = [];
 
-/* ======================
-   TOKEN
-====================== */
-function saveToken() {
-  const token = document.getElementById("token").value.trim();
-
-  if (!token) return alert("Token required");
-
-  localStorage.setItem("token", token);
-  alert("Token saved");
-  fetchCategories();
-  fetchTransactions();
-}
-
-/* ======================
-   CATEGORIES
-====================== */
 async function fetchCategories() {
-  try {
-    const result = await api("/categories");
-    categories = result.data || [];
-    populateCategories();
-  } catch (err) {
-    console.error("Categories error:", err);
-  }
+    try {
+        const response = await fetch(`${API_URL}/categories`, {
+            credentials: 'include'
+        });
+        const result = await response.json();
+        if (result.data) {
+            categories = result.data;
+            populateCategorySelects();
+        }
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+    }
 }
 
-function populateCategories() {
-  const select = document.getElementById("trans-category");
-  const type = document.getElementById("trans-type").value.toLowerCase();
-
-  let html = `<option value="">Select Category</option>`;
-
-  categories
-    .filter(c => c.type === type)
-    .forEach(c => {
-      html += `<option value="${c._id}">${c.name}</option>`;
-    });
-
-  select.innerHTML = html;
+function populateCategorySelects() {
+    const transCatSelect = document.getElementById('trans-category');
+    if (!transCatSelect) return;
+    
+    const type = document.getElementById('trans-type').value.toLowerCase();
+    
+    // Save current selection if any
+    const currentVal = transCatSelect.value;
+    
+    transCatSelect.innerHTML = '<option value="">Select Category</option>';
+    
+    categories
+        .filter(cat => cat.type === type)
+        .forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat._id;
+            option.textContent = cat.name + (cat.limit > 0 ? ` (Limit: $${cat.limit})` : '');
+            transCatSelect.appendChild(option);
+        });
+        
+    if (currentVal) transCatSelect.value = currentVal;
 }
 
-/* ======================
-   TRANSACTIONS
-====================== */
-async function fetchTransactions() {
-  try {
-    const result = await api("");
-
-    const display = document.getElementById("display-area");
-    display.innerHTML = "";
-
-    const transactions = result.data?.transactions || [];
-
-    transactions.forEach(t => {
-      const div = document.createElement("div");
-      div.className = t.type;
-
-      div.innerHTML = `
-        <strong>${t.type}</strong> - $${t.amount}
-        ${t.category ? `[${t.category.name}]` : ""}
-        <br/>
-        ${t.description || ""}
-      `;
-
-      display.appendChild(div);
-    });
-  } catch (err) {
-    console.error("Transactions error:", err);
-  }
+function toggleTransactionFields() {
+    const type = document.getElementById('trans-type').value;
+    const sourceInput = document.getElementById('trans-source');
+    const catSelect = document.getElementById('trans-category');
+    
+    if (type === 'Income') {
+        sourceInput.style.display = 'block';
+        sourceInput.required = true;
+        catSelect.required = false; 
+    } else {
+        sourceInput.style.display = 'none';
+        sourceInput.required = false;
+        catSelect.required = true;
+    }
+    populateCategorySelects();
 }
 
-/* ======================
-   ADD TRANSACTION
-====================== */
-document.getElementById("transaction-form").onsubmit = async (e) => {
-  e.preventDefault();
+async function fetchData() {
+    const response = await fetch(API_URL, {
+        credentials: 'include'
+    });
+    const result = await response.json();
+    const display = document.getElementById('display-area');
+    display.innerHTML = '';
 
-  const type = document.getElementById("trans-type").value;
+    if (result.data && result.data.transactions) {
+        result.data.transactions.forEach(t => {
+            const div = document.createElement('div');
+            div.className = `item ${t.type}`;
+            const catName = t.category ? ` [${t.category.name}]` : '';
+            div.innerHTML = `<strong>${t.type}:</strong> $${t.amount}${catName} - ${t.description || 'No description'}`;
+            display.appendChild(div);
+        });
+    } else {
+        display.innerHTML = '<p>No transactions found.</p>';
+    }
+}
 
-  const body = {
-    amount: document.getElementById("trans-amount").value,
-    type,
-    description: document.getElementById("trans-desc").value,
-    categoryId: document.getElementById("trans-category").value,
-    source: document.getElementById("trans-source").value,
-    date: new Date(),
-  };
+// Handle Transaction Form
+document.getElementById('transaction-form').onsubmit = async (e) => {
+    e.preventDefault();
+    const data = {
+        amount: document.getElementById('trans-amount').value,
+        type: document.getElementById('trans-type').value,
+        description: document.getElementById('trans-desc').value,
+        categoryId: document.getElementById('trans-category').value,
+        source: document.getElementById('trans-source').value,
+        date: new Date()
+    };
 
-  try {
-    await api("", {
-      method: "POST",
-      body: JSON.stringify(body),
+    const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(data)
     });
 
-    alert("Transaction added");
-    fetchTransactions();
-    e.target.reset();
-  } catch (err) {
-    alert(err.message || "Error");
-  }
+    const result = await res.json();
+
+    if (res.ok) {
+        if (result.warning) {
+            alert(result.warning); // Show popup alert if near limit
+        } else {
+            alert('Transaction added!');
+        }
+        fetchData();
+        e.target.reset();
+        toggleTransactionFields();
+    } else {
+        alert('Error: ' + (result.message || 'Error adding transaction'));
+    }
 };
 
-/* ======================
-   ADD CATEGORY
-====================== */
-document.getElementById("category-form").onsubmit = async (e) => {
-  e.preventDefault();
+// Handle Category Form
+document.getElementById('category-form').onsubmit = async (e) => {
+    e.preventDefault();
+    const data = {
+        name: document.getElementById('cat-name').value,
+        type: document.getElementById('cat-type').value,
+        limit: document.getElementById('cat-limit').value
+    };
 
-  const body = {
-    name: document.getElementById("cat-name").value,
-    type: document.getElementById("cat-type").value,
-  };
-
-  try {
-    await api("/categories", {
-      method: "POST",
-      body: JSON.stringify(body),
+    const res = await fetch(`${API_URL}/categories`, {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(data)
     });
 
-    alert("Category created");
-    fetchCategories();
-    e.target.reset();
-  } catch (err) {
-    alert(err.message || "Error");
-  }
+    if (res.ok) {
+        alert('Category created!');
+        fetchCategories();
+        e.target.reset();
+    } else {
+        const err = await res.json();
+        alert('Error: ' + (err.message || 'Error creating category'));
+    }
 };
-
-/* ======================
-   INIT
-====================== */
-if (localStorage.getItem("token")) {
-  fetchCategories();
-  fetchTransactions();
-}

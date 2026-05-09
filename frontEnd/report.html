@@ -1,93 +1,89 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Financial Report</title>
-    <link rel="stylesheet" href="./assets/css/report.css">
-    <link rel="stylesheet" href="./assets/css/nav.css">
-    
-</head>
+    <link rel="stylesheet" href="./assets/css/report.css" />
+    <link rel="stylesheet" href="./assets/css/nav.css" />
+  </head>
 
-<body>
+  <body>
     <nav>
-        <a href="index.html">Financial Goals</a>
-        <a href="report.html">Report</a>
-        <a href="addTransaction.html">Add Transaction</a>
-        <a href="login.html" id="logoutLink" onclick="logout()">Logout</a>
+      <a href="index.html">Financial Goals</a>
+      <a href="report.html">Report</a>
+      <a href="addTransaction.html">Add Transaction</a>
+      <span id="userInfo"></span>
+      <a href="login.html" id="logoutLink" onclick="logout()">Logout</a>
     </nav>
     <div class="report-container">
-        <h1>Financial Report</h1>
+      <h1>Financial Report</h1>
 
-        <form method="get" id="filter-form">
-            <div>
-                <label for="startDate">Start Date:</label>
-                <input type="date" id="startDate" name="startDate">
-            </div>
+      <form method="get" id="filter-form">
+        <div>
+          <label for="startDate">Start Date:</label>
+          <input type="date" id="startDate" name="startDate" />
+        </div>
 
-            <div>
-                <label for="endDate">End Date:</label>
-                <input type="date" id="endDate" name="endDate">
-            </div>
-            <div>
-                <label for="pattern">Pattern:</label>
-                <select id="pattern" name="pattern">
-                    <option value="">Select Pattern</option>
-                    <option value="day">Day</option>
-                    <option value="week">Week</option>
-                    <option value="month">Month</option>
-                </select>
-                <p id="patternError" class="error-message"></p>
-            </div>
+        <div>
+          <label for="endDate">End Date:</label>
+          <input type="date" id="endDate" name="endDate" />
+        </div>
+        <div>
+          <label for="pattern">Pattern:</label>
+          <select id="pattern" name="pattern">
+            <option value="">Select Pattern</option>
+            <option value="day">Day</option>
+            <option value="week">Week</option>
+            <option value="month">Month</option>
+          </select>
+          <p id="patternError" class="error-message"></p>
+        </div>
 
-            <button onclick="generateReport(event);" type="submit">Generate Report</button>
-        </form>
+        <button onclick="generateReport(event);" type="submit">Generate Report</button>
+      </form>
 
-        <!-- info section -->
-        <section id="info">
-            <div class="period-info">
-                Report - from <span id="ReportStartDate"></span> to <span id="ReportEndDate"></span>
-            </div>
+      <!-- info section -->
+      <section id="info">
+        <div class="period-info">
+          Report - from <span id="ReportStartDate"></span> to
+          <span id="ReportEndDate"></span>
+        </div>
 
-            <div class="info-grid">
-                <div class="info-card">
-                    <label>Total Income</label>
-                    <p id="totalIncome">$0.00</p>
-                </div>
+        <div class="info-grid">
+          <div class="info-card">
+            <label>Total Income</label>
+            <p id="totalIncome">$0.00</p>
+          </div>
 
-                <div class="info-card">
-                    <label>Total Expenses</label>
-                    <p id="totalExpenses">$0.00</p>
-                </div>
+          <div class="info-card">
+            <label>Total Expenses</label>
+            <p id="totalExpenses">$0.00</p>
+          </div>
 
-                <div class="info-card">
-                    <label>Net Savings</label>
-                    <p id="netSavings">$0.00</p>
-                </div>
-            </div>
+          <div class="info-card">
+            <label>Net Savings</label>
+            <p id="netSavings">$0.00</p>
+          </div>
+        </div>
 
-            <div style="background: #fafafa; padding: 15px; border-radius: 4px;">
-                <h3>Category Breakdown</h3>
-                <div id="categoryBreakdown"></div>
-            </div>
-            <div>
-                <h3>spending patterns</h3>
-                <canvas id="spendingPatternChart"></canvas>
-            </div>
-            <!-- charts for expenses breakdown -->
-            <section id="charts">
-            <canvas id="myChart"></canvas>
-            <canvas id="incomeExpenseBarChart"></canvas>
+        <div style="background: #fafafa; padding: 15px; border-radius: 4px">
+          <h3>Category Breakdown</h3>
+          <div id="categoryBreakdown"></div>
+        </div>
+        <div>
+          <h3>spending patterns</h3>
+          <canvas id="spendingPatternChart"></canvas>
+        </div>
+        <!-- charts for expenses breakdown -->
+        <section id="charts">
+          <canvas id="myChart"></canvas>
+          <canvas id="incomeExpenseBarChart"></canvas>
         </section>
-        </section>
-
-        
+      </section>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./assets/js/report.js"></script>
-
-</body>
-
+  </body>
 </html>
