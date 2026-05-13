@@ -50,7 +50,7 @@ class ReportService {
   static async spendingPattern(
     userId: string,
     filters: TransactionFilters = {},
-    groupBy: "day" | "week" | "month" = "week",
+    groupBy: "day" | "week" | "month" = "day",
   ): Promise<SpendingPattern[]> {
     const isValidDate = (d: any) => d && d !== 'undefined' && d !== 'null';
     const dateFilter =

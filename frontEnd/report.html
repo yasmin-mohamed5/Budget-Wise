@@ -67,9 +67,9 @@
         <div class="form-group" style="margin-bottom: 0;">
           <label for="groupBy">Group By</label>
           <select id="groupBy" name="groupBy">
-            <option value="day">Day</option>
+            <option value="day" selected>Day</option>
             <option value="week">Week</option>
-            <option value="month" selected>Month</option>
+            <option value="month">Month</option>
           </select>
         </div>
         <button type="submit" class="btn btn-primary">Generate Report</button>
@@ -126,6 +126,10 @@
       </div>
     </div>
 
+    <div>
+      <canvas id="incomeExpenseBarChart"></canvas>
+    </div>
+  
     <!-- Details Table -->
     <div class="glass-card animate-fade-in" style="padding: 2rem; margin-top: 2rem; animation-delay: 0.4s;">
       <h2>Detailed Report</h2>
@@ -147,6 +151,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="assets/js/api.js"></script>
   <script>
     if (!localStorage.getItem('token')) window.location.href = 'login.html';
@@ -160,19 +165,30 @@
         const params = {
           pattern: document.getElementById('groupBy').value
         };
-        const startDate = document.getElementById('startDate').value;
-        const endDate = document.getElementById('endDate').value;
+        let startDate = document.getElementById('startDate').value;
+        let endDate = document.getElementById('endDate').value;
+        if(!endDate){
+          endDate = new Date().toISOString().split('T')[0];
+          document.getElementById('endDate').value = endDate;
+        }
+        if(!startDate) {
+          let tempDate = new Date(endDate);
+          tempDate.setMonth(tempDate.getMonth() - 1);
+          startDate = tempDate.toISOString().split('T')[0];
+          document.getElementById('startDate').value = startDate;
+        } 
         if (startDate) params.startDate = startDate;
         if (endDate) params.endDate = endDate;
 
         const res = await api.reports.get(params);
         const data = res.data;
+
         let totalGoalSavings = data.summary.totalGoalSavings;
         if (typeof totalGoalSavings !== 'number') {
           const goals = await api.goals.getAll();
           totalGoalSavings = goals.reduce((total, goal) => total + Number(goal.currentAmount || 0), 0);
         }
-
+        createIncomeExpenseChart(data);
         // Update Summary
         document.getElementById('totalIncome').textContent = `$${data.summary.totalIncome.toFixed(2)}`;
         document.getElementById('totalExpenses').textContent = `$${data.summary.totalExpenses.toFixed(2)}`;
@@ -280,6 +296,54 @@
       event.preventDefault();
       loadReport();
     });
+
+    function createIncomeExpenseChart(reportData) {
+
+    // destroy old chart if exists
+    if (window.incomeExpenseChartInstance) {
+        window.incomeExpenseChartInstance.destroy();
+    }
+
+    const ctx = document.getElementById('incomeExpenseBarChart');
+
+    window.incomeExpenseChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Income', 'Expenses'],
+            datasets: [{
+                label: 'Amount',
+                data: [
+                  reportData.summary.totalIncome.toFixed(2),
+                    reportData.summary.totalExpenses.toFixed(2)
+                ],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 99, 132, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Income vs Expenses'
+                }
+            }
+        }
+    });
+}
+
 
     loadReport();
   </script>
