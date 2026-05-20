@@ -1,4 +1,4 @@
-const API_BASE = ""; // Relative to root since we serve static files from express
+const API_BASE = "https://he-mart-arehouse-mario-nasser4692-43apxqpf.leapcell.dev"; // Relative to root since we serve static files from express
 
 async function request(endpoint, options = {}) {
   const token = localStorage.getItem("token");
@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", updateNav);
 async function handleLogout() {
   try {
     await api.auth.logout();
-  } catch (e) {}
+  } catch (e) { }
   localStorage.removeItem("token");
   localStorage.removeItem("user");
   window.location.href = "login.html";

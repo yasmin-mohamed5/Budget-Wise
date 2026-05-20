@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "MVCPatternDemo",
+      "request": "launch",
+      "mainClass": "com.task7.MVCPatternDemo",
+      "projectName": "SWE_Assignment1_feb2763c"
+    },
+    {
+      "type": "java",
+      "name": "Calculator_App",
+      "request": "launch",
+      "mainClass": "com.Calculator_App",
+      "projectName": "SWE_Assignment1_feb2763c"
+    },
+    {
+      "type": "java",
+      "name": "Current File (External Terminal)",
+      "request": "launch",
+      "mainClass": "${file}",
+      "console": "externalTerminal"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run Current Node.js File",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
+}

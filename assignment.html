@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Budget wise - Software Requirements Specifications</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; margin: 20px; }
+        h1, h2, h3 { color: #333; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Software Requirements Specifications: Budget wise</h1>
+    <p>This document outlines the software requirements for the "Budget wise" project, as per the CS251 course assignment.</p>
+
+    <h2>1. Document Purpose and Audience</h2>
+    <p>This document explains how the system will be built, covering system architecture, design decisions, components, modules, class diagrams, and technical details. It is intended for Developers, Software Architects, Technical Teams, System Designers, and Testers.</p>
+
+    <h2>2. Architecture</h2>
+    <p>The system uses a 3-Tier Layered Architecture for scalability, portability, and maintainability.</p>
+    <table>
+        <tr><th>Layer</th><th>Component</th><th>Description</th></tr>
+        <tr><td>Presentation</td><td>Mobile/Web UI</td><td>User interaction, dashboards, charts.</td></tr>
+        <tr><td>Application</td><td>Auth, Transaction, Budget, Analytics, Sync</td><td>Core business logic and API management.</td></tr>
+        <tr><td>Data</td><td>Relational DB</td><td>Storage of profiles, transactions, and history.</td></tr>
+    </table>
+
+    <h2>3. Class Diagram Summary</h2>
+    <p>The system comprises several key entities, including User, Transaction (with Income and Expense subclasses), Category, Budget, FinancialGoal, Notification, and Report.</p>
+
+    <h2>4. SOLID Principles Implementation</h2>
+    <ul>
+        <li><strong>Single Responsibility:</strong> Models, Services, and Controllers have distinct, limited responsibilities.</li>
+        <li><strong>Open/Closed:</strong> The Transaction base class is extended for new types (like Income/Expense) without modification.</li>
+        <li><strong>Liskov Substitution:</strong> Income and Expense are used interchangeably where a Transaction is expected.</li>
+    </ul>
+
+    <h2>5. Project Ownership</h2>
+    <table>
+        <tr><th>Owner</th><th>Responsibility</th></tr>
+        <tr><td>Yasmin Mohamed Nabil</td><td>Class diagrams</td></tr>
+        <tr><td>Lojain Mohammed Abu Elhassan</td><td>Sequence diagrams</td></tr>
+        <tr><td>Mario Nasser Fawzy</td><td>Architecture diagrams</td></tr>
+    </table>
+</body>
+</html>

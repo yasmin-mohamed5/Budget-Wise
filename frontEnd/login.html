@@ -1,117 +1,269 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Budget-Wise | Login</title>
-  <link rel="stylesheet" href="assets/css/main.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Budget-Wise | Login</title>
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .login-container {
+        width: 100%;
+        max-width: 440px;
+        padding: 3rem;
+        text-align: center;
+      }
+      .brand {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(to right, #059669, #10b981);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .subtitle {
+        color: var(--text-muted);
+        margin-bottom: 2.5rem;
+      }
+      .footer-link {
+        margin-top: 2rem;
+        color: var(--text-muted);
+        font-size: 0.875rem;
+      }
+      .footer-link a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+      }
+    </style>
+    <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f0f0;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
     }
-    .login-container {
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 40px 36px;
       width: 100%;
-      max-width: 440px;
-      padding: 3rem;
+      max-width: 400px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      border-top: 4px solid #4caf50;
+    }
+
+    .logo {
       text-align: center;
+      margin-bottom: 28px;
     }
-    .brand {
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(to right, #059669, #10b981);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .subtitle {
-      color: var(--text-muted);
-      margin-bottom: 2.5rem;
-    }
-    .footer-link {
-      margin-top: 2rem;
-      color: var(--text-muted);
-      font-size: 0.875rem;
-    }
-    .footer-link a {
-      color: var(--primary);
-      text-decoration: none;
+    .logo h1 { font-size: 22px; font-weight: 700; color: #222; }
+    .logo span { color: #4caf50; }
+    .logo p { color: #888; font-size: 13px; margin-top: 4px; }
+
+    .form-group { margin-bottom: 16px; }
+
+    label {
+      display: block;
+      font-size: 13px;
       font-weight: 600;
+      color: #444;
+      margin-bottom: 6px;
     }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #333;
+      background: #fafafa;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+    input:focus {
+      outline: none;
+      border-color: #4caf50;
+      background: #fff;
+    }
+
+    .field-error {
+      color: #e53935;
+      font-size: 12px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .remember-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .remember-row input[type="checkbox"] {
+      accent-color: #4caf50;
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+    }
+    .remember-row label {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 500;
+      color: #555;
+      cursor: pointer;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 11px;
+      background: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+    .btn:hover    { background: #43a047; }
+    .btn:disabled { background: #a5d6a7; cursor: not-allowed; }
+
+    .alert {
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .alert.error   { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+    .alert.success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+
+    .switch-link {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 13px;
+      color: #777;
+    }
+    .switch-link a { color: #4caf50; font-weight: 600; text-decoration: none; }
+    .switch-link a:hover { text-decoration: underline; }
   </style>
-</head>
-<body>
-  <div class="login-container glass-card animate-fade-in">
-    <h1 class="brand">Budget-Wise</h1>
-    <p class="subtitle">Welcome back! Please enter your details.</p>
-
-    <div id="alert" class="alert"></div>
-
-    <form id="loginForm">
-      <div class="form-group" style="text-align: left;">
-        <label for="email">Email Address</label>
-        <input type="email" id="email" placeholder="example@email.com" required>
+  </head>
+  <body>
+    <div class="card glass-card animate-fade-in">
+      <div class="logo">
+        <h1><span>Budget</span>-Wise</h1>
+        <p>Welcome back</p>
       </div>
-      <div class="form-group" style="text-align: left;">
-        <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Enter your password" required>
-      </div>
+      <div id="alert" class="alert"></div>
 
-      <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem; text-align: left;">
-        <input type="checkbox" id="rememberMe" style="width: auto; margin-bottom: 0;">
-        <label for="rememberMe" style="margin-bottom: 0;">Remember me for 30 days</label>
-      </div>
+      <form id="loginForm">
+        <div class="form-group" style="text-align: left">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="example@email.com"
+            required
+          />
+        </div>
+        <div class="form-group" style="text-align: left">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
 
-      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
-        Sign In
-      </button>
-    </form>
+        <div
+          class="form-group"
+          style="
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-align: left;
+          "
+        >
+          <input
+            type="checkbox"
+            id="rememberMe"
+            style="width: auto; margin-bottom: 0"
+          />
+          <label for="rememberMe" style="margin-bottom: 0"
+            >Remember me for 30 days</label
+          >
+        </div>
 
-    <p class="footer-link">
-      Don't have an account? <a href="register.html">Create one for free</a>
-    </p>
-  </div>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          style="width: 100%; margin-top: 1rem"
+        >
+          Sign In
+        </button>
+      </form>
 
-  <script src="assets/js/api.js"></script>
-  <script>
-    document.getElementById('loginForm').onsubmit = async (e) => {
-      e.preventDefault();
-      const btn = e.target.querySelector('button');
-      const alertEl = document.getElementById('alert');
+      <p class="switch-link">
+        Don't have an account? <a href="register.html">Register</a>
+      </p>
+    </div>
 
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const rememberMe = document.getElementById('rememberMe').checked;
+    <script src="assets/js/api.js"></script>
+    <script>
+      document.getElementById("loginForm").onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector("button");
+        const alertEl = document.getElementById("alert");
 
-      btn.disabled = true;
-      btn.textContent = 'Signing in...';
-      alertEl.style.display = 'none';
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const rememberMe = document.getElementById("rememberMe").checked;
 
-      try {
-        const data = await api.auth.login({ email, password, rememberMe });
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        btn.disabled = true;
+        btn.textContent = "Signing in...";
+        alertEl.style.display = "none";
 
-        alertEl.textContent = 'Login successful! Redirecting...';
-        alertEl.className = 'alert alert-success';
-        alertEl.style.display = 'block';
+        try {
+          const data = await api.auth.login({ email, password, rememberMe });
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
 
-        setTimeout(() => window.location.href = 'index.html', 1000);
-      } catch (err) {
-        alertEl.textContent = err.message || 'Invalid email or password';
-        alertEl.className = 'alert alert-error';
-        alertEl.style.display = 'block';
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Sign In';
-      }
-    };
-  </script>
-</body>
+          alertEl.textContent = "Login successful! Redirecting...";
+          alertEl.className = "alert alert-success";
+          alertEl.style.display = "block";
+
+          setTimeout(() => (window.location.href = "index.html"), 1000);
+        } catch (err) {
+          alertEl.textContent = err.message || "Invalid email or password";
+          alertEl.className = "alert alert-error";
+          alertEl.style.display = "block";
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Sign In";
+        }
+      };
+    </script>
+  </body>
 </html>

@@ -1,0 +1,15 @@
+{
+    "java.jdt.ls.java.home": "c:\\Users\\Mario\\SWE_Assignment1\\java-1.8.0-openjdk-1.8.0.392-1.b08.redhat.windows.x86_64\\java-1.8.0-openjdk-1.8.0.392-1.b08.redhat.windows.x86_64",
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-1.8",
+            "path": "c:\\Users\\Mario\\SWE_Assignment1\\java-1.8.0-openjdk-1.8.0.392-1.b08.redhat.windows.x86_64\\java-1.8.0-openjdk-1.8.0.392-1.b08.redhat.windows.x86_64",
+            "default": true
+        }
+    ],
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar"
+    ],
+    "antigravity.agent.openOnStartup": false
+}
+
