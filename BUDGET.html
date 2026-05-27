@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget-Wise | Smart Financial Management</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================
+           1. EXACT SIGN-IN PAGE COLOR PALETTE
+           ========================================= */
+        :root {
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --primary-green: #4CAF50;
+            --primary-dark: #45a049;
+            --primary-light: #e8f5e9;
+            --text-dark: #333333;
+            --text-muted: #757575;
+            --text-light: #999999;
+            --border-color: #e0e0e0;
+            
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --shadow-soft: 0 2px 12px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.1);
+            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            
+            --font-heading: 'Poppins', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .navbar-brand {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .navbar-brand .budget {
+            color: var(--text-dark);
+        }
+
+        .navbar-brand .wise {
+            color: var(--primary-green);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 1rem;
+            transition: var(--transition-smooth);
+            position: relative;
+            padding: 6px 0;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary-green);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary-green);
+            border-radius: 2px;
+            transition: var(--transition-smooth);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--primary-green);
+            color: var(--card-bg) !important;
+            padding: 10px 28px !important;
+            border-radius: 8px;
+            font-weight: 600 !important;
+        }
+
+        .nav-cta:hover {
+            background: var(--primary-dark) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .nav-cta::after { display: none !important; }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .menu-toggle span {
+            width: 24px;
+            height: 3px;
+            background: var(--text-dark);
+            border-radius: 2px;
+            transition: var(--transition-smooth);
+        }
+
+        /* =========================================
+           3. HERO SECTION - SPLIT LAYOUT
+           ========================================= */
+        .hero {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 8rem 3rem 4rem;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+            position: relative;
+        }
+
+        .hero-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* =========================================
+           4. LEFT SIDE - TEXT CONTENT
+           ========================================= */
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            align-self: flex-start;
+        }
+
+        .content-wrapper h1 {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--text-dark);
+            margin-bottom: 1.2rem;
+            letter-spacing: -0.5px;
+        }
+
+        .content-wrapper h1 span {
+            color: var(--primary-green);
+            font-weight: 800;
+        }
+
+        .content-wrapper p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--primary-green);
+            color: var(--card-bg);
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: var(--transition-smooth);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.35);
+            border: none;
+            cursor: pointer;
+            align-self: flex-start;
+        }
+
+        .cta-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.45);
+        }
+
+        .cta-button:active { transform: translateY(0); }
+
+        /* =========================================
+           5. RIGHT SIDE - FULL SIZE MASCOT
+           ========================================= */
+        .visual-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1200px;
+        }
+
+        .glow-orb {
+            position: absolute;
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(circle, rgba(76, 175, 80, 0.4) 0%, transparent 70%);
+            filter: blur(30px);
+            z-index: -1;
+            animation: pulseGlow 4s ease-in-out infinite alternate;
+        }
+
+        .mascot-img {
+            max-width: 100%;
+            height: auto;
+            width: 100%;
+            transform: rotateY(-5deg) rotateX(3deg);
+            transition: transform 0.5s ease;
+            animation: floatMascot 6s ease-in-out infinite;
+            filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.15));
+        }
+
+        .visual-wrapper:hover .mascot-img {
+            transform: rotateY(0deg) rotateX(0deg) scale(1.02);
+        }
+
+        @keyframes floatMascot {
+            0%, 100% { transform: translateY(0) rotateY(-5deg) rotateX(3deg); }
+            50% { transform: translateY(-15px) rotateY(-2deg) rotateX(1deg); }
+        }
+
+        @keyframes pulseGlow {
+            0% { opacity: 0.5; transform: scale(0.95); }
+            100% { opacity: 0.7; transform: scale(1.05); }
+        }
+
+        /* =========================================
+           6. FOOTER - LIKE FIRST IMAGE
+           ========================================= */
+        .footer {
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .footer-text {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        .footer-text .heart {
+            color: var(--primary-green);
+            display: inline-block;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            10%, 30% { transform: scale(1.1); }
+            20%, 40% { transform: scale(1); }
+        }
+
+        /* =========================================
+           7. INTERACTIVE MOUSE TRAIL
+           ========================================= */
+        .cursor-trail {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .trail-particle {
+            position: absolute;
+            font-size: 20px;
+            pointer-events: none;
+            animation: trailFloat 3s ease-out forwards;
+            opacity: 0;
+            z-index: 0;
+        }
+
+        @keyframes trailFloat {
+            0% { opacity: 0; transform: translateY(0) scale(0.5) rotate(0deg); }
+            10% { opacity: 0.8; transform: translateY(-10px) scale(1) rotate(15deg); }
+            100% { opacity: 0; transform: translateY(-80px) scale(0.3) rotate(360deg); }
+        }
+
+        .click-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--primary-green) 0%, transparent 70%);
+            pointer-events: none;
+            animation: rippleExpand 1.5s ease-out forwards;
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        @keyframes rippleExpand {
+            0% { width: 0; height: 0; opacity: 0.4; }
+            100% { width: 300px; height: 300px; opacity: 0; margin-top: -150px; margin-left: -150px; }
+        }
+
+        /* =========================================
+           8. RESPONSIVE DESIGN
+           ========================================= */
+        @media (max-width: 1024px) {
+            .hero-container { gap: 3rem; }
+            .content-wrapper h1 { font-size: 2.2rem; }
+        }
+
+        @media (max-width: 900px) {
+            .menu-toggle { display: flex; }
+            
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--card-bg);
+                border-bottom: 1px solid var(--border-color);
+                flex-direction: column;
+                padding: 1.5rem 2rem;
+                gap: 1rem;
+                transform: translateY(-150%);
+                opacity: 0;
+                visibility: hidden;
+                transition: var(--transition-smooth);
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .hero { padding: 6rem 2rem 3rem; }
+            
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .content-wrapper { order: 2; text-align: center; }
+            .badge { align-self: center; }
+            .cta-button { align-self: center; }
+            .visual-wrapper { order: 1; }
+            .content-wrapper h1 { font-size: 2rem; }
+            .mascot-img { max-width: 80%; transform: rotateY(0) rotateX(0); }
+        }
+
+        @media (max-width: 480px) {
+            .navbar { padding: 1rem 1.5rem; }
+            .navbar-brand { font-size: 1.4rem; }
+            
+            .hero { padding: 5rem 1.5rem 2rem; }
+            .content-wrapper h1 { font-size: 1.6rem; }
+            .content-wrapper p { font-size: 1rem; }
+            .cta-button { width: 100%; text-align: center; }
+            .mascot-img { max-width: 90%; }
+            
+            .footer { padding: 1.2rem 1rem; }
+            .footer-text { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Interactive Mouse Trail Container -->
+    <div class="cursor-trail" id="cursorTrail"></div>
+
+    <!-- NAVBAR - WHITE WITH GREEN ACCENTS -->
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">
+            <span class="budget">Budget</span>
+            <span class="wise">Wise</span>
+        </a>
+        
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#" class="active">Home</a></li>
+            <li><a href="signin.html">Sign In</a></li>
+            <li><a href="main.html" class="nav-cta">Get Started</a></li>
+        </ul>
+
+        <div class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- MAIN HERO SECTION - SPLIT LAYOUT -->
+    <main class="hero">
+        <div class="hero-container">
+            
+            <!-- LEFT SIDE: Text Content -->
+            <div class="content-wrapper">
+                <div class="badge">✨ Smart Savings Made Easy</div>
+                <h1>Take Control of Your Money with <span>Budget-Wise</span></h1>
+                <p>Your all-in-one financial companion — track expenses, set budgets, hit savings goals, and get real-time insights to manage your finances smarter.</p>
+                <a href="main.html" class="cta-button">Get Started</a>
+            </div>
+
+            <!-- RIGHT SIDE: Full Size Mascot Image -->
+            <div class="visual-wrapper">
+                <div class="glow-orb"></div>
+                <!-- REPLACE 'mascot.png' WITH YOUR ACTUAL IMAGE FILENAME -->
+                <img src="mascot.png" alt="Budget-Wise Financial Mascot" class="mascot-img">
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER - LIKE FIRST IMAGE -->
+    <footer class="footer">
+        <p class="footer-text">© 2024 Budget-Wise. All rights reserved. | Made with <span class="heart">💚</span> for smarter finances</p>
+    </footer>
+
+    <!-- JavaScript for Interactive Effects & Mobile Menu -->
+    <script>
+        // =========================================
+        // 1. MOBILE MENU TOGGLE
+        // =========================================
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const spans = menuToggle.querySelectorAll('span');
+            if (navLinks.classList.contains('active')) {
+                spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+                spans[1].style.opacity = '0';
+                spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+            } else {
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+            }
+        });
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                const spans = menuToggle.querySelectorAll('span');
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+            });
+        });
+
+        // =========================================
+        // 2. FUN MOUSE TRAIL PARTICLES
+        // =========================================
+        const particles = ['💰', '', '📈', '', '✨', '', '🪙', '📊', '🌱', '💡'];
+        const trailContainer = document.getElementById('cursorTrail');
+        let lastX = 0, lastY = 0, particleCount = 0;
+        const maxParticles = 30;
+
+        document.addEventListener('mousemove', (e) => {
+            const distance = Math.hypot(e.clientX - lastX, e.clientY - lastY);
+            if (distance > 40) {
+                lastX = e.clientX;
+                lastY = e.clientY;
+                createParticle(e.clientX, e.clientY);
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            createRipple(e.clientX, e.clientY);
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    createParticle(
+                        e.clientX + (Math.random() - 0.5) * 60,
+                        e.clientY + (Math.random() - 0.5) * 60
+                    );
+                }, i * 100);
+            }
+        });
+
+        function createParticle(x, y) {
+            if (particleCount >= maxParticles) {
+                const oldest = trailContainer.querySelector('.trail-particle');
+                if (oldest) oldest.remove();
+            } else {
+                particleCount++;
+            }
+
+            const particle = document.createElement('div');
+            particle.className = 'trail-particle';
+            particle.textContent = particles[Math.floor(Math.random() * particles.length)];
+            
+            const size = 16 + Math.random() * 12;
+            particle.style.fontSize = `${size}px`;
+            particle.style.left = `${x + (Math.random() - 0.5) * 20}px`;
+            particle.style.top = `${y + (Math.random() - 0.5) * 20}px`;
+            
+            trailContainer.appendChild(particle);
+
+            setTimeout(() => {
+                particle.remove();
+                particleCount--;
+            }, 3000);
+        }
+
+        function createRipple(x, y) {
+            const ripple = document.createElement('div');
+            ripple.className = 'click-ripple';
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            trailContainer.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 1500);
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                trailContainer.innerHTML = '';
+                particleCount = 0;
+            }
+        });
+    </script>
+
+</body>
+</html>
