@@ -10,7 +10,7 @@
 
 **A full-stack personal finance platform** that helps you track income, manage expenses, set budget limits, and visualize your financial goals — all secured with enterprise-grade authentication.
 
-🌐 **[Live Demo → budgetwise-fcai.netlify.app](https://budgetwise-fcai.netlify.app/)**
+🌐 **[Live Demo → budget-wisefcai.vercel.app/](https://budget-wisefcai.vercel.app/)**
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/Vanilla_JS-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
